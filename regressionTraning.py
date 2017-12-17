@@ -6,11 +6,9 @@ with open('data_eeg.csv', 'r') as f:
 
 
 def getData(row):
-    i = 0
     list = []
-    while i < 22016:
+    for i in range(0, 22016):
         list.append(float(data[i][row]))
-        i += 1
     return list
 
 
