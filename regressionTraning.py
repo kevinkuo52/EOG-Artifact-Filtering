@@ -1,5 +1,6 @@
 import csv
 import tensorflow as tf
+import numpy as np
 with open('data_eeg.csv', 'r') as f:
   reader = csv.reader(f)
   data = list(reader)
@@ -18,7 +19,6 @@ def fill():
         list.append(i+1)
     return list
 
-
 def transpose(list):
     return [[list[j][i] for j in range(len(list))] for i in range(len(list[0]))]
 
@@ -30,6 +30,23 @@ eeg1 = getData(0)
 eeg2 = getData(1)
 eeg3 = getData(2)
 
+#weight = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+
+b = transpose([eeg1, eeg2, eeg3])
+
+x_train = transpose([eog20, eog21, eog22])
+
+y_train = transpose([getData(3), getData(4), getData(5)])
+
+y_train_offset = np.subtract(y_train,b)
+
+weight = np.divide(np.dot(transpose(x_train), y_train_offset), np.dot(transpose(x_train), x_train))
+print("weight:")
+print(weight)
+
+cleanData = np.subtract(y_train, np.dot(x_train, weight))
+print("clean data:")
+print(cleanData)
 
 weight = tf.Variable(tf.zeros([3, 3], dtype=tf.float32))
 b = tf.constant(transpose([eeg1, eeg2, eeg3]), dtype=tf.float32)
